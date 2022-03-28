@@ -3,7 +3,6 @@ Run the  generatorVector
 
 '''
 
-
 import os
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import *
@@ -16,38 +15,34 @@ os.environ['PYSPARK_SUBMIT_ARGS'] = '--packages org.apache.spark:spark-sql-kafka
 bootstrapServers = "localhost:9092"
 topics = "vectors"
 
+spark = SparkSession \
+    .builder \
+    .appName("ReadVectors") \
+    .getOrCreate()
 
-spark = SparkSession\
-        .builder\
-        .appName("ReadVectors")\
-        .getOrCreate()
-
-        # ReadStream from kafka
-df_kafka = spark\
-            .readStream \
-            .format("kafka")\
-            .option("kafka.bootstrap.servers", bootstrapServers)\
-            .option("subscribe", topics)\
-            .load()
+# ReadStream from kafka
+df_kafka = spark \
+    .readStream \
+    .format("kafka") \
+    .option("kafka.bootstrap.servers", bootstrapServers) \
+    .option("subscribe", topics) \
+    .load()
 
 schema = StructType() \
-        .add("id", StringType()) \
-        .add("student", StringType()) \
-        .add("school",StringType()) \
-        .add("class",StringType()) \
-        .add("vector",StringType()) 
+    .add("id", StringType()) \
+    .add("student", StringType()) \
+    .add("school", StringType()) \
+    .add("class", StringType()) \
+    .add("vector", StringType())
 
-
-
-df_kafka = df_kafka.select(col("value").cast("string"))\
-        .select(from_json(col("value"), schema).alias("value"))\
-        .select("value.*")
+df_kafka = df_kafka.select(col("value").cast("string")) \
+    .select(from_json(col("value"), schema).alias("value")) \
+    .select("value.*")
 
 # .option("numRows",2) \
 df_kafka \
-            .writeStream \
-            .format("console") \
-            .outputMode("append") \
-            .start() \
-            .awaitTermination()
-
+    .writeStream \
+    .format("console") \
+    .outputMode("append") \
+    .start() \
+    .awaitTermination()
