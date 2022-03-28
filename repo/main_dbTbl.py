@@ -33,20 +33,11 @@ from pyspark.mllib.linalg.distributed import RowMatrix
 # input('what is the school?')
 v_school = 'madrid'
 v_class = 2
+
 # udf1 - turn vectors nums into list params >
 # vc_list_udf = funcs.udf(lambda row: tuple([float(n) for n in list(str(row))]))
-# rows = sc.parallelize([(1, 2, 3), (4, 5, 6), (7, 8, 9), (10, 11, 12)])
 vc_list_udf = funcs.udf(lambda row: ([float(n) for n in list(str(row))]))
 
-# udf2 - turn vectors nums into list params >
-# vc_cosine_calk not valid yet =>
-# @funcs.udf((ArrayType(DoubleType()))
-#                     def dot_group(M):
-#                         combs = combinations(M, 2)
-#                         return [(i.dot(j) / (LA.norm(i) * LA.norm(j))).tolist() for i, j in combs]
-#
-#  # or float(i.dot(j) / (LA.norm(i) * LA.norm(j)))
-# dot_group = funcs.udf(g_dot, ArrayType(DoubleType()))
 spark = SparkSession \
     .builder \
     .appName("dbTbl2rdd") \
@@ -60,26 +51,27 @@ dbTbl_det = dbTbl1
 dbTbl2 = dbTbl1.drop('id', 'clas', 'school', 'student')\
          .where(dbTbl1.school == v_school)\
          .where(dbTbl1.clas == v_class)
-#                                                \
-#                                            .orderBy(id, ascending=True)
+#          \
+#        .orderBy(id, ascending=True)
 dbTbl3 = dbTbl2.withColumn('vector', vc_list_udf(dbTbl2.vector)).rdd\
         .map(lambda x: x)\
         .collect()
-#        .orderBy(id, ascending=True)
+#       .orderBy(id, ascending=True)
 
 for row in dbTbl3:
     print((row[0]))
+#
+# mat = RowMatrix(dbTbl3)
+# exact = mat.columnSimilarities()
+# approx = mat.columnSimilarities(0.05)
+#
+# dbTbl4 = exact.entries.collect()
+#
+# for row in dbTbl4:
+#     print(row)
 
-mat = RowMatrix(dbTbl3)
-exact = mat.columnSimilarities()
-approx = mat.columnSimilarities(0.05)
 
-dbTbl4 = exact.entries.collect()
-
-for row in dbTbl4:
-    print(row)
-
-    # print(row[0] + "," +str(row[1]))
+# print(row[0] + "," +str(row[1]))
 
 # rows = sc.parallelize([(1, 2, 3), (4, 5, 6), (7, 8, 9), (10, 11, 12)])
 #
