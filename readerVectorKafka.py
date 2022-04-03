@@ -5,10 +5,9 @@ Run the  generatorVector
 import os
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import *
-from textblob import TextBlob
 from pyspark.sql.types import StringType, StructType, IntegerType, FloatType
 
-# conection between  spark and kafka
+# connection between  spark and kafka
 os.environ['PYSPARK_SUBMIT_ARGS'] = '--packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.1 pyspark-shell'
 
 bootstrapServers = "localhost:9092"
