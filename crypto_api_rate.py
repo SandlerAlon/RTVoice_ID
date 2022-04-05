@@ -1,11 +1,20 @@
+# realtime exchange rate for pair of digital currency (e.g., Bitcoin) and physical currency (e.g., USD)
 import requests
 
-# realtime exchange rate for pair of digital currency (e.g., Bitcoin) and physical currency (e.g., USD)
-url = 'https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=BTC&to_currency=USD&apikey=OBD3CVJOK6ZZAJ48'
-r = requests.get(url)
-data = r.json()
 
-exch_rate = float(data["Realtime Currency Exchange Rate"]["5. Exchange Rate"])
+class CryptoApiRate:
+    def __init__(self):
+        self._set_params()
 
-print('Exchange Rate in USD: ', str(exch_rate))
+    def _set_params(self):
+        self.apikey = 'OBD3CVJOK6ZZAJ48'
+        self.url = 'https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE'
+
+    def retrieve_crypto_rate(self, crypto):
+        url = f'{self.url}&from_currency={crypto}&to_currency=USD&apikey={self.apikey}'
+        r = requests.get(url)
+        data = r.json()
+        exch_rate = float(data["Realtime Currency Exchange Rate"]["5. Exchange Rate"])
+        return exch_rate
+
 
