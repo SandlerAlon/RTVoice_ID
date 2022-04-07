@@ -7,10 +7,21 @@ telebot_token = '5265934962:AAH88FrYy8pbBjQa9qitN1PgvRQWgAWN4to'
 bot = telebot.TeleBot(telebot_token)
 
 
-# echo
-# @bot.message_handler(func=lambda message: True)
-# def echo_all(message):
-# 	bot.reply_to(message, message.text)
+@bot.message_handler(commands=['start'])
+def start_command(message):
+	bot.send_message(
+		message.chat.id,
+		'Greetings to NayaCryptoTweets.\n' +
+		'To get help press /help.')
+
+
+@bot.message_handler(commands=['help'])
+def start_command(message):
+	bot.send_message(
+		message.chat.id,
+		'To get Exchange Rate of crypto press /rate .\n' +
+		'......')
+
 
 @bot.message_handler(commands=['rate'])
 def crypto_rate(message):
@@ -21,3 +32,5 @@ def crypto_rate(message):
 
 car = CryptoApiRate()
 bot.polling(none_stop=True)
+
+

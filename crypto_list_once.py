@@ -3,6 +3,8 @@ from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
 
 import json
 
+from azure_blob import AzureBlob
+
 
 class CryptoApis:
     def __init__(self):
@@ -23,7 +25,7 @@ class CryptoApis:
             'start': start_batch,
             'limit': self.batch_size,
             'convert': 'USD',
-            'market_cap_max': 1000000000
+            'market_cap_min': 5000000000
         }
         return parameters
 
@@ -35,22 +37,38 @@ class CryptoApis:
             batch_min_id = self.start_batch
             batch_cnt = 0
             crypto_lst = []
-            while cont_list and batch_cnt < self.num_of_batches:
-                param = self.set_url_parameter(batch_min_id)
-                response = session.get(self.url, params=param)
-                data = json.loads(response.text)
-                if data:
-                    print(batch_min_id, len(data))
-                    crypto_lst.extend(data['data'])
-                    batch_min_id += self.batch_size
-                    batch_cnt += 1
-                else:
-                    cont_list = False
+
+            data = {}
+            data['data'] = []
+            data['data'] = [{"id": 1, "name": "Bitcoin", "symbol": "BTC"},{"id": 2010, "name": "Cardano", "symbol": "ADA"}]
+            azureInst.upload_jsonlist_to_blob(data['data'],
+                                              azureInst.container_name,
+                                              azureInst.crypto_list_blob)
+
+            data['data'] = [{"id": 3717, "name": "Wrapped Bitcoin", "symbol": "WBTC"},{"id": 1975, "name": "Chainlink", "symbol": "LINK"}]
+            azureInst.upload_jsonlist_to_blob(data['data'],
+                                              azureInst.container_name,
+                                              azureInst.crypto_list_blob)
+
+            # while 'data' in data:  # cont_list # and batch_cnt < self.num_of_batches:
+            #     # param = self.set_url_parameter(batch_min_id)
+            #     # response = session.get(self.url, params=param)
+            #     # data = json.loads(response.text)
+            #     if 'data' in data:
+            #         print(batch_min_id, len(data))
+            #         # crypto_lst.extend(data['data'])
+            #         batch_min_id += self.batch_size
+            #         azureInst.upload_jsonlist_to_blob(data['data'],
+            #                                           azureInst.container_name,
+            #                                           azureInst.crypto_list_blob)
+            #         batch_cnt += 1
+            #     else:
+            #         cont_list = False
         except (ConnectionError, Timeout, TooManyRedirects) as e:
             print(e)
-        print('asd')
 
 
 if __name__ == '__main__':
     crypto_inst = CryptoApis()
+    azureInst = AzureBlob()
     crypto_inst.retrieve_crypto_list()
