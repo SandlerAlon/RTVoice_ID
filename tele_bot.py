@@ -19,8 +19,9 @@ def start_command(message):
 def start_command(message):
 	bot.send_message(
 		message.chat.id,
-		'To get Exchange Rate of crypto press /rate .\n' +
-		'......')
+		'To get Exchange Rate of crypto type /rate .\n' +
+		'To get all our suggestion type /listen. \n' +
+		'To get suggestion of Influencer type /from @Influencer  (put his name instead of @Influencer). ')
 
 
 @bot.message_handler(commands=['rate'])
@@ -29,6 +30,21 @@ def crypto_rate(message):
 	rate = car.retrieve_crypto_rate(crypto)
 	bot.reply_to(message, str(rate))
 
+@bot.message_handler(commands=['listen'])
+def reg_to_suggestions(message):
+	chat_id = message.chat.id
+	# TODO register to suggestions with @chat_id
+	bot.send_message(message.chat.id, 'Registered')
+
+
+@bot.message_handler(commands=['from'])
+def reg_to_influencer(message):
+	influencer = message.text[6:]
+	chat_id = message.chat.id
+	#TODO register to @influencer with @chat_id
+	bot.send_message(message.chat.id, 'Registered')
+
+#TODO send to chat.id messages
 
 car = CryptoApiRate()
 bot.polling(none_stop=True)

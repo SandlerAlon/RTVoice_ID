@@ -25,7 +25,7 @@ class CryptoApis:
             'start': start_batch,
             'limit': self.batch_size,
             'convert': 'USD',
-            'market_cap_min': 5000000000
+            'market_cap_max': 1000000000
         }
         return parameters
 
@@ -37,7 +37,7 @@ class CryptoApis:
             batch_min_id = self.start_batch
             batch_cnt = 0
             crypto_lst = []
-
+#TODO write original json
             data = {}
             data['data'] = []
             data['data'] = [{"id": 1, "name": "Bitcoin", "symbol": "BTC"},{"id": 2010, "name": "Cardano", "symbol": "ADA"}]

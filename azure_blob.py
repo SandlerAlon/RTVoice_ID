@@ -28,6 +28,4 @@ class AzureBlob:
         except Exception as e:
             print(e.args)
 
-#   list_blob_in_container(self.container_name)
-#   upload_jsonlist_to_blob('test', blob_service_client, self.container_name, self.crypto_list_blob)
-
+#TODO describe correct append behavior
