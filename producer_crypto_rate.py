@@ -26,7 +26,6 @@ class CryptoApiRate:
             exch_rate = [-1]
 
         exch_rdd = self.sc.parallelize(exch_rate).take(1)
-        #TODO return RDD
         return exch_rdd.take(1)
 
 
