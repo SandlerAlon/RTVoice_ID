@@ -1,12 +1,13 @@
 import telebot
 from telebot import types
 
-from crypto_api_rate import CryptoApiRate
+from producer_crypto_rate import CryptoApiRate
 
 telebot_token = '5265934962:AAH88FrYy8pbBjQa9qitN1PgvRQWgAWN4to'
 bot = telebot.TeleBot(telebot_token)
 
-
+# test_chat1 = 1149508890
+# test_chat2 = 1652471822
 @bot.message_handler(commands=['start'])
 def start_command(message):
 	bot.send_message(
@@ -19,16 +20,8 @@ def start_command(message):
 def start_command(message):
 	bot.send_message(
 		message.chat.id,
-		'To get Exchange Rate of crypto type /rate .\n' +
 		'To get all our suggestion type /listen. \n' +
-		'To get suggestion of Influencer type /from @Influencer  (put his name instead of @Influencer). ')
-
-
-@bot.message_handler(commands=['rate'])
-def crypto_rate(message):
-	crypto = message.text[6:]
-	rate = car.retrieve_crypto_rate(crypto)
-	bot.reply_to(message, str(rate))
+		'To get suggestion of Influencer type /from InfluencerName  (put his name instead of InfluencerName). ')
 
 @bot.message_handler(commands=['listen'])
 def reg_to_suggestions(message):
@@ -44,9 +37,9 @@ def reg_to_influencer(message):
 	#TODO register to @influencer with @chat_id
 	bot.send_message(message.chat.id, 'Registered')
 
-#TODO send to chat.id messages
-
 car = CryptoApiRate()
 bot.polling(none_stop=True)
+
+
 
 

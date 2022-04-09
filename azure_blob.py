@@ -7,7 +7,7 @@ import json
 class AzureBlob:
     def __init__(self):
         self.connect_str = 'DefaultEndpointsProtocol=https;AccountName=voice4identification;AccountKey=AvVM5qTpY+VW0EAN6MTrGqsjmVQ5fsX9il070e36TRfVJW6vzvFyenZeXVAQrnRjUwzPvjYKxjqmekBIGIyS+g==;EndpointSuffix=core.windows.net'
-        self.container_name = 'test1'  # 'raw-data'  #
+        self.container_name = 'cryptolist-data'  # 'raw-data'  #
         self.crypto_list_blob = 'crypto_list'
         self.blob_service_client = BlobServiceClient.from_connection_string(self.connect_str)
 
@@ -28,4 +28,3 @@ class AzureBlob:
         except Exception as e:
             print(e.args)
 
-#TODO describe correct append behavior

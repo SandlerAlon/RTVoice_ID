@@ -20,12 +20,13 @@ class CryptoApiRate:
         url = f'{self.url}&from_currency={crypto}&to_currency=USD&apikey={self.apikey}'
         r = requests.get(url)
         data = r.json()
+        exch_rate = []
         if 'Realtime Currency Exchange Rate' in data:
-            exch_rate = float(data['Realtime Currency Exchange Rate']['5. Exchange Rate'])
+            exch_rate.append(float(data['Realtime Currency Exchange Rate']['5. Exchange Rate']))
         else:
-            exch_rate = [-1]
+            exch_rate.append(-1)
 
-        exch_rdd = self.sc.parallelize(exch_rate).take(1)
-        return exch_rdd.take(1)
+        exch_rdd = self.sc.parallelize(exch_rate)
+        return exch_rdd
 
 

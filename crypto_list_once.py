@@ -18,7 +18,7 @@ class CryptoApis:
                     }
         self.start_batch = 1
         self.num_of_batches = 50
-        self.batch_size = 200
+        self.batch_size = 10
 
     def set_url_parameter(self, start_batch):
         parameters = {
@@ -36,35 +36,26 @@ class CryptoApis:
             cont_list = True
             batch_min_id = self.start_batch
             batch_cnt = 0
-            crypto_lst = []
-#TODO write original json
-            data = {}
-            data['data'] = []
-            data['data'] = [{"id": 1, "name": "Bitcoin", "symbol": "BTC"},{"id": 2010, "name": "Cardano", "symbol": "ADA"}]
-            azureInst.upload_jsonlist_to_blob(data['data'],
-                                              azureInst.container_name,
-                                              azureInst.crypto_list_blob)
+            while cont_list and batch_cnt < self.num_of_batches:
+                param = self.set_url_parameter(batch_min_id)
+                response = session.get(self.url, params=param)
+                data = json.loads(response.text)
+                # second if to prevent adding []
+                if 'data' in data:
+                    print(batch_min_id, len(data))
+                    # crypto_lst.extend(data['data'])
+                    for data_json in data['data']:
+                        if 'tags' in data_json:
+                            data_json.pop('tags')
 
-            data['data'] = [{"id": 3717, "name": "Wrapped Bitcoin", "symbol": "WBTC"},{"id": 1975, "name": "Chainlink", "symbol": "LINK"}]
-            azureInst.upload_jsonlist_to_blob(data['data'],
-                                              azureInst.container_name,
-                                              azureInst.crypto_list_blob)
-
-            # while 'data' in data:  # cont_list # and batch_cnt < self.num_of_batches:
-            #     # param = self.set_url_parameter(batch_min_id)
-            #     # response = session.get(self.url, params=param)
-            #     # data = json.loads(response.text)
-            #     if 'data' in data:
-            #         print(batch_min_id, len(data))
-            #         # crypto_lst.extend(data['data'])
-            #         batch_min_id += self.batch_size
-            #         azureInst.upload_jsonlist_to_blob(data['data'],
-            #                                           azureInst.container_name,
-            #                                           azureInst.crypto_list_blob)
-            #         batch_cnt += 1
-            #     else:
-            #         cont_list = False
-        except (ConnectionError, Timeout, TooManyRedirects) as e:
+                    batch_min_id += self.batch_size
+                    azureInst.upload_jsonlist_to_blob(data['data'],
+                                                      azureInst.container_name,
+                                                      azureInst.crypto_list_blob)
+                    batch_cnt += 1
+                else:
+                    cont_list = False
+        except Exception as e:
             print(e)
 
 
